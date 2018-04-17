@@ -1,0 +1,27 @@
+{
+  "name": "kinto-cli",
+  "version": "0.0.1",
+  "description": "KintoHub CLI Tools",
+  "main": "lib/index.js",
+  "scripts": {
+    "start": "./bin/kinto.js"
+  },
+  "bin": {
+    "kinto": "./bin/kinto.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kintohub/kinto-cli.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kintohub/kinto-cli/issues"
+  },
+  "homepage": "https://github.com/kintohub/kinto-cli#readme",
+  "dependencies": {
+    "commander": "^2.15.1",
+    "configstore": "^3.1.2",
+    "http2-proxy": "^2.0.0"
+  }
+}
