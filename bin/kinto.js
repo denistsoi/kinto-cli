@@ -1,9 +1,13 @@
 #!/usr/bin/env node
 
-const util = require('util')
-const exec = util.promisify(require('child_process').exec)
 const program = require('commander')
-const kinto = require('../lib')
+const {
+  updateConfig,
+  viewConfig,
+  clearConfig,
+  proxyRequest
+} = require('../lib')
+const { error } = require('../lib/logger')
 
 program.version('0.1.0', '-v, --version')
 
@@ -12,19 +16,21 @@ program
   .option('-e --endpoint <endpoint>', 'overwrite the default endpoint')
   .description('Initialize the base endpoint')
   .action(cmd => {
-    const endpoint = cmd.endpoint || 'http://api.kintohub.com'
-    kinto.updateConfig({ endpoint })
+    updateConfig({ endpoint: cmd.endpoint })
   })
 
 program
   .command('view-config')
   .description('view the config')
-  .action(() => {
-    console.log(kinto.getConfig())
-  })
+  .action(viewConfig)
 
 program
-  .command('proxy <appname>')
+  .command('clear-config')
+  .description('remove all the saved config (need to do `kinto init` after)')
+  .action(clearConfig)
+
+program
+  .command('proxy [appname]')
   .description('proxy for kintoblocks inside the provided kintoapp')
   .option(
     '-b, --block <block:port>',
@@ -43,17 +49,16 @@ program
     '-f --file <file>',
     'you can use a config json file instead of passing the blocks'
   )
+  .option(
+    '-p --port <port>',
+    'Port for the local dev server, default port is 8000',
+    parseInt
+  )
   .action(async (appName, options) => {
-    if (!options.block.length && !options.file) {
-      return error('missing required flag --block')
-    }
-    if(await isDockerRunning()) {
-      return error('docker must be running')
-    }
-
-    console.log(
-      `blocks: ${options.block}, appname: ${appName}, file: ${options.file}`
-    )
+    proxyRequest({
+      appName: appName,
+      ...options
+    })
   })
 
 program.parse(process.argv)
@@ -65,17 +70,4 @@ var NO_COMMAND_SPECIFIED = program.args.length === 0
 if (NO_COMMAND_SPECIFIED) {
   // e.g. display usage
   program.help()
-}
-
-function error(message) {
-  return console.error(`\nerror: ${message}\n`)
-}
-
-async function isDockerRunning() {
-  try {
-    await exec('docker ps')
-    return true
-  } catch (e) {
-    return false
-  }
 }
