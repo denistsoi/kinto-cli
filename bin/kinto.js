@@ -8,8 +8,9 @@ const {
   proxyRequest
 } = require('../lib')
 const { error } = require('../lib/logger')
+const pkg = require('../package.json')
 
-program.version('0.1.0', '-v, --version')
+program.version(pkg.version, '-v, --version')
 
 program
   .command('init')
