@@ -1,6 +1,6 @@
 {
   "name": "kinto-cli",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "KintoHub CLI Tools",
   "main": "lib/index.js",
   "scripts": {
