@@ -14,10 +14,10 @@ program.version(pkg.version, '-v, --version')
 
 program
   .command('init')
-  .option('-e --endpoint <endpoint>', 'overwrite the default endpoint')
-  .description('Initialize the base endpoint')
+  .option('-e --env <env>', 'overwrite the default env (api.kintohub.com)')
+  .description('Initialize the base env')
   .action(cmd => {
-    updateConfig({ endpoint: cmd.endpoint })
+    updateConfig({ env: cmd.env })
   })
 
 program
